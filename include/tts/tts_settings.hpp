@@ -34,7 +34,7 @@ static const QString localePrefix = prefix + "Locale";
 
 static const QString language = localePrefix + "/language";
 static const QString territory = localePrefix + "/territory";
-static const QString autoLocale = localePrefix + "/useAutoLocale";
+static const QString autoLocale = "useAutoLocale";
 
 } // namespace SettingsKeys
 

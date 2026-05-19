@@ -16,11 +16,6 @@ class SettingsBackend : public QObject
                WRITE setLanguageIndex
                NOTIFY languageIndexChanged
                FINAL)
-    Q_PROPERTY(bool useAutoTtsLanguage
-               READ useAutoTtsLanguage
-               WRITE setUseAutoTtsLanguage
-               NOTIFY useAutoTtsLanguageChanged
-               FINAL)
     Q_PROPERTY(LanguageName autoLanguage
                READ autoLanguage
                NOTIFY autoLanguageChanged

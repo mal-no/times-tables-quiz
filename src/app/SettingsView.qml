@@ -43,9 +43,9 @@ Item {
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 Layout.column: 1
                 Layout.row: 0
-                checked: settingsBackend.useAutoTtsLanguage
+                checked: QuizSettings.useAutoLocale
 
-                onToggled: settingsBackend.useAutoTtsLanguage = checked
+                onToggled: QuizSettings.useAutoLocale = checked
             }
 
             ComboBox {
