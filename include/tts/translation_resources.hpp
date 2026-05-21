@@ -27,13 +27,26 @@ typedef std::pair<Tts::LocaleDescriptor, std::string> ResourcePair;
 // templates. Then it can be replaced for testing.
 struct TranslationResources
 {
-    static ResourceMap &get();
-    static std::vector<Tts::Locale> getLocales();
-    static long index(const Tts::LocaleDescriptor &key);
-    static Tts::LocaleDescriptor locale(const long &index);
+    static TranslationResources &instance();
+
+    TranslationResources(const TranslationResources &) = delete;
+    TranslationResources(const TranslationResources &&) = delete;
+    TranslationResources &operator=(const TranslationResources &) = delete;
+    TranslationResources &operator=(const TranslationResources &&) = delete;
+
+    ResourceMap &get();
+    std::vector<Tts::Locale> getLocales();
+    long index(const Tts::LocaleDescriptor &key);
+    Tts::LocaleDescriptor locale(const long &index);
+
+protected:
+    TranslationResources() { }
+    ~TranslationResources() { }
+
+    ResourceMap &resources() { return resources_; }
 
 private:
-    TranslationResources() { }
+    ResourceMap resources_;
 };
 
 } // namespace Tts

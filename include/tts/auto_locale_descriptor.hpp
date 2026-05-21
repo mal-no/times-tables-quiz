@@ -48,7 +48,8 @@ private:
         // it can change for unit tests.
         // It can already have a state in the resources getter to avoid
         // rebuilding the list on every call.
-        const Tts::ResourceMap resources = TTranslationResources::get();
+        const Tts::ResourceMap resources =
+            TTranslationResources::instance().get();
 
         // An empty translation resource list should not be possible. If the
         // translations are id-based, there is not even a default English

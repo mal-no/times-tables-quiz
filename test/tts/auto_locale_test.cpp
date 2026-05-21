@@ -4,12 +4,12 @@
 
 TEST(AutoLocaleTest, FindsUniqueResource)
 {
-    TtsTest::TranslationResources::get().clear();
+    TtsTest::TranslationResources::instance().get().clear();
 
     // Prepare one entry that also is the match.
     auto match = Tts::LocaleDescriptor(Tts::Language::en, Tts::Territory::US);
     Tts::Locale::setDefault(match.language, match.territory);
-    TtsTest::TranslationResources::get().insert({ match, "" });
+    TtsTest::TranslationResources::instance().get().insert({ match, "" });
     auto expected = match;
 
     auto result = Tts::AutoLocaleDescriptor<TtsTest::TranslationResources>();
@@ -17,7 +17,7 @@ TEST(AutoLocaleTest, FindsUniqueResource)
 
     // Insert more entries, all different in locale and territory; keep 'match'
     // the same.
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().insert(
         { { Tts::LocaleDescriptor(Tts::Language::de, Tts::Territory::DE), "" },
           { Tts::LocaleDescriptor(Tts::Language::fr, Tts::Territory::FR),
             "" } });
@@ -26,7 +26,7 @@ TEST(AutoLocaleTest, FindsUniqueResource)
     EXPECT_EQ(result, expected);
 
     // Insert another entry and change 'match'.
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().insert(
         { Tts::LocaleDescriptor(Tts::Language::it, Tts::Territory::IT), "" });
     match.language = Tts::Language::fr;
     match.territory = Tts::Territory::FR;
@@ -39,17 +39,17 @@ TEST(AutoLocaleTest, FindsUniqueResource)
 
 TEST(AutoLocaleTest, ThrowsForEmptyResources)
 {
-    TtsTest::TranslationResources::get().clear();
+    TtsTest::TranslationResources::instance().get().clear();
     EXPECT_THROW(Tts::AutoLocaleDescriptor<TtsTest::TranslationResources>(),
                  std::invalid_argument);
 }
 
 TEST(AutoLocaleTest, UsesSystemLocaleForSameLanguageMissingTerritory)
 {
-    TtsTest::TranslationResources::get().clear();
+    TtsTest::TranslationResources::instance().get().clear();
 
     Tts::Locale::setDefault(Tts::Language::en, Tts::Territory::DE);
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().insert(
         { Tts::LocaleDescriptor(Tts::Language::en, Tts::Territory::US), "" });
 
     auto expected =
@@ -66,8 +66,8 @@ TEST(AutoLocaleTest, CatchesLanguageUpdate)
     Tts::LocaleDescriptor newMatch =
         Tts::LocaleDescriptor(Tts::Language::de, Tts::Territory::DE);
 
-    TtsTest::TranslationResources::get().clear();
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().clear();
+    TtsTest::TranslationResources::instance().get().insert(
         { { oldMatch, "" }, { newMatch, "" } });
 
     Tts::Locale::setDefault(oldMatch.language, oldMatch.territory);
@@ -86,8 +86,8 @@ TEST(AutoLocaleTest, CatchesTerritoryUpdateForSameLanguage)
     auto newMatch =
         Tts::LocaleDescriptor(Tts::Language::en, Tts::Territory::UK);
 
-    TtsTest::TranslationResources::get().clear();
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().clear();
+    TtsTest::TranslationResources::instance().get().insert(
         { { oldMatch, "" }, { newMatch, "" } });
 
     Tts::Locale::setDefault(oldMatch.language, oldMatch.territory);
@@ -106,8 +106,8 @@ TEST(AutoLocaleTest, CatchesTerritoryUpdateForDifferentLanguage)
     auto newMatch =
         Tts::LocaleDescriptor(Tts::Language::fr, Tts::Territory::FR);
 
-    TtsTest::TranslationResources::get().clear();
-    TtsTest::TranslationResources::get().insert(
+    TtsTest::TranslationResources::instance().get().clear();
+    TtsTest::TranslationResources::instance().get().insert(
         { { oldMatch, "" }, { newMatch, "" } });
 
     Tts::Locale::setDefault(oldMatch.language, oldMatch.territory);

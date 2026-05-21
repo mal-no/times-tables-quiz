@@ -4,11 +4,22 @@ namespace TtsTest {
 
 struct TranslationResources : Tts::TranslationResources
 {
-    static Tts::ResourceMap &get()
+    static TranslationResources &instance()
     {
-        static Tts::ResourceMap tmp;
-        return tmp;
+        static TranslationResources tr;
+        return tr;
     }
+
+    TranslationResources(const TranslationResources &) = delete;
+    TranslationResources(const TranslationResources &&) = delete;
+    TranslationResources &operator=(const TranslationResources &) = delete;
+    TranslationResources &operator=(const TranslationResources &&) = delete;
+
+    Tts::ResourceMap &get() { return Tts::TranslationResources::resources(); }
+
+private:
+    TranslationResources() { }
+    ~TranslationResources() { }
 };
 
 } // namespace TtsTest
