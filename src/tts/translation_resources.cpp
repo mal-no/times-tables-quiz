@@ -5,7 +5,6 @@
 #  include "boost_translation_dir.hpp"
 #  include <filesystem>
 #endif
-#include <algorithm>
 #include <iterator>
 #include <stdexcept>
 
@@ -15,12 +14,9 @@ Tts::TranslationResources &Tts::TranslationResources::instance()
     return tr;
 }
 
-Tts::ResourceMap &Tts::TranslationResources::get()
+Tts::TranslationResources::TranslationResources()
 {
     // The translation resource list cannot change without an app update.
-
-    if (resources_.size() > 0)
-        return resources_;
 
 #if defined QT_TRANSLATOR
     // ":" is the base path for Qt Resource files.
@@ -29,6 +25,7 @@ Tts::ResourceMap &Tts::TranslationResources::get()
         auto dirStr = it.next().toStdString();
         auto descriptor = LocaleDescriptor::fromResourcePath(dirStr);
 
+        locales_.push_back(descriptor);
         resources_.insert({ descriptor, dirStr });
     }
 #elif defined BOOST_TRANSLATOR
@@ -41,27 +38,20 @@ Tts::ResourceMap &Tts::TranslationResources::get()
                 /* C++20 */) {
                 auto descriptor =
                     LocaleDescriptor::fromFileName(dir.filename().string());
+                locales_.push_back(descriptor);
                 resources_.insert({ descriptor, dirStr });
             }
         });
 #endif
+}
 
+Tts::ResourceMap &Tts::TranslationResources::get()
+{
     return resources_;
 }
 
 std::vector<Tts::LocaleDescriptor> &Tts::TranslationResources::locales()
 {
-    if (locales_.size() > 0)
-        return locales_;
-
-    // C++20
-    std::ranges::transform(
-        TranslationResources::get(),
-        std::back_inserter(locales_),
-        [](const ResourcePair &key) -> Tts::LocaleDescriptor {
-            return key.first;
-        });
-
     return locales_;
 }
 

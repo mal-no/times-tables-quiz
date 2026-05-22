@@ -40,7 +40,7 @@ struct TranslationResources
     Tts::LocaleDescriptor locale(const long &index);
 
 protected:
-    TranslationResources() { }
+    TranslationResources();
     ~TranslationResources() { }
 
     ResourceMap &resources() { return resources_; }
