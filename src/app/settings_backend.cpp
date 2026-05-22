@@ -15,9 +15,10 @@ QStringList SettingsBackend::languages()
         return languageNames;
 
     std::ranges::transform( // C++20
-        Tts::TranslationResources::instance().getLocales(),
+        Tts::TranslationResources::instance().locales(),
         std::back_inserter(languageNames),
-        [](const Tts::Locale &l) -> QString {
+        [](const Tts::LocaleDescriptor &ld) -> QString {
+            Tts::Locale l(ld.language, ld.territory);
 #ifdef QT_TRANSLATOR
             QLocale ql = static_cast<QLocale>(l);
 #else

@@ -49,21 +49,20 @@ Tts::ResourceMap &Tts::TranslationResources::get()
     return resources_;
 }
 
-std::vector<Tts::Locale> Tts::TranslationResources::getLocales()
+std::vector<Tts::LocaleDescriptor> &Tts::TranslationResources::locales()
 {
-    static std::vector<Tts::Locale> locales;
-    if (locales.size() > 0)
-        return locales;
+    if (locales_.size() > 0)
+        return locales_;
 
     // C++20
-    std::ranges::transform(TranslationResources::get(),
-                           std::back_inserter(locales),
-                           [](const ResourcePair &key) -> Tts::Locale {
-                               LocaleDescriptor ld = key.first;
-                               return Tts::Locale(ld.language, ld.territory);
-                           });
+    std::ranges::transform(
+        TranslationResources::get(),
+        std::back_inserter(locales_),
+        [](const ResourcePair &key) -> Tts::LocaleDescriptor {
+            return key.first;
+        });
 
-    return locales;
+    return locales_;
 }
 
 long Tts::TranslationResources::index(const Tts::LocaleDescriptor &key)
