@@ -15,7 +15,20 @@ struct TranslationResources : Tts::TranslationResources
     TranslationResources &operator=(const TranslationResources &) = delete;
     TranslationResources &operator=(const TranslationResources &&) = delete;
 
-    Tts::ResourceMap &get() { return Tts::TranslationResources::resources(); }
+    void setLocales(const std::vector<Tts::LocaleDescriptor> &locales)
+    {
+        Tts::TranslationResources::setLocales(locales);
+    }
+
+    void addLocale(const Tts::LocaleDescriptor &locale)
+    {
+        Tts::TranslationResources::addLocale(locale);
+    }
+
+    void setResources(const Tts::ResourceMap &resources)
+    {
+        Tts::TranslationResources::setResources(resources);
+    }
 
 private:
     TranslationResources() { }

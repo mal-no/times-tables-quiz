@@ -48,20 +48,18 @@ private:
         // it can change for unit tests.
         // It can already have a state in the resources getter to avoid
         // rebuilding the list on every call.
-        const Tts::ResourceMap resources =
-            TTranslationResources::instance().get();
+        const std::vector<Tts::LocaleDescriptor> locales =
+            TTranslationResources::instance().locales();
 
         // An empty translation resource list should not be possible. If the
         // translations are id-based, there is not even a default English
         // translation available, so allowing the c-locale as fallback would
         // not make sense.
-        if (resources.size() == 0)
+        if (locales.size() == 0)
             throw std::invalid_argument(
                 "No translation resource files found for auto locale");
 
-        for (Tts::ResourcePair r : resources) {
-            Tts::LocaleDescriptor resource = r.first;
-
+        for (Tts::LocaleDescriptor resource : locales) {
             if (resource == system) {
                 language = system.language;
                 territory = system.territory;
@@ -82,7 +80,7 @@ private:
         // first translation resource as 'automatic' tts locale.
         // It can still be changed manually anyways.
         if (!fallback.has_value()) {
-            fallback = resources.begin()->first;
+            fallback = *locales.begin();
             resourceKey_ = *fallback;
         }
 

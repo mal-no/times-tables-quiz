@@ -44,20 +44,9 @@ private:
             return;
         localeDescriptor = std::move(settingsLocaleDescriptor);
 
-        if (TTranslationResources::instance().get().empty())
-            throw std::invalid_argument("Translation resources are empty.");
-
-        if (!TTranslationResources::instance().get().contains(
-                localeDescriptor)) {
-            std::stringstream ss;
-            ss << "No matching key in translation resources for locale "
-                  "descriptor "
-               << localeDescriptor << ".";
-            throw std::invalid_argument(ss.str());
-        }
-
+        // can throw
         std::string resourcePath =
-            TTranslationResources::instance().get().at(localeDescriptor);
+            TTranslationResources::instance().path(localeDescriptor);
         bool ok = TTranslator::load(resourcePath);
 
         if (!ok)

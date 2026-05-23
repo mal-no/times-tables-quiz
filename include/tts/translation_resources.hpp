@@ -34,8 +34,8 @@ struct TranslationResources
     TranslationResources &operator=(const TranslationResources &) = delete;
     TranslationResources &operator=(const TranslationResources &&) = delete;
 
-    ResourceMap &get();
-    std::vector<Tts::LocaleDescriptor> &locales();
+    std::string path(const Tts::LocaleDescriptor &resourceKey);
+    std::vector<Tts::LocaleDescriptor> locales();
     long index(const Tts::LocaleDescriptor &key);
     Tts::LocaleDescriptor locale(const long &index);
 
@@ -43,7 +43,25 @@ protected:
     TranslationResources();
     ~TranslationResources() { }
 
-    ResourceMap &resources() { return resources_; }
+    void setLocales(const std::vector<Tts::LocaleDescriptor> &locales)
+    {
+        resources_.clear();
+        for (const auto &l : locales)
+            resources_.insert({ l, "" });
+        locales_ = std::move(locales);
+    }
+    void addLocale(const LocaleDescriptor &locale)
+    {
+        resources_.insert({ locale, "" });
+        locales_.push_back(locale);
+    }
+    void setResources(const ResourceMap &resources)
+    {
+        locales_.clear();
+        for (const auto r : resources)
+            locales_.push_back(r.first);
+        resources_ = std::move(resources);
+    }
 
 private:
     ResourceMap resources_;

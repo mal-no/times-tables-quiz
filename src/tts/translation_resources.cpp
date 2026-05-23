@@ -45,12 +45,24 @@ Tts::TranslationResources::TranslationResources()
 #endif
 }
 
-Tts::ResourceMap &Tts::TranslationResources::get()
+std::string
+Tts::TranslationResources::path(const Tts::LocaleDescriptor &resourceKey)
 {
-    return resources_;
+    if (locales_.empty())
+        throw std::invalid_argument("Translation resources are empty.");
+
+    if (std::ranges::find(locales_, resourceKey) == locales_.end()) {
+        std::stringstream ss;
+        ss << "No matching key in translation resources for locale "
+              "descriptor "
+           << resourceKey << ".";
+        throw std::invalid_argument(ss.str());
+    }
+
+    return resources_.at(resourceKey);
 }
 
-std::vector<Tts::LocaleDescriptor> &Tts::TranslationResources::locales()
+std::vector<Tts::LocaleDescriptor> Tts::TranslationResources::locales()
 {
     return locales_;
 }
