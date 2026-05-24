@@ -15,9 +15,10 @@ QStringList SettingsBackend::languages()
         return languageNames;
 
     std::ranges::transform( // C++20
-        Tts::TranslationResources::getLocales(),
+        Tts::TranslationResources::instance().locales(),
         std::back_inserter(languageNames),
-        [](const Tts::Locale &l) -> QString {
+        [](const Tts::LocaleDescriptor &ld) -> QString {
+            Tts::Locale l(ld.language, ld.territory);
 #ifdef QT_TRANSLATOR
             QLocale ql = static_cast<QLocale>(l);
 #else
@@ -35,7 +36,7 @@ int SettingsBackend::languageIndex()
     // Because I don't expect large translation resource lists, the type
     // of index_ doesn't need to be long:
     // NOLINTNEXTLINE(*-narrowing-conversions)
-    int index = Tts::TranslationResources::index(localeKey);
+    int index = Tts::TranslationResources::instance().index(localeKey);
     if (index < 0) {
         setUseAutoTtsLanguage(true);
         return 0;
@@ -71,7 +72,8 @@ void SettingsBackend::setLanguageIndex(const int index)
         return;
 
     try {
-        Tts::LocaleDescriptor ld = Tts::TranslationResources::locale(index);
+        Tts::LocaleDescriptor ld =
+            Tts::TranslationResources::instance().locale(index);
         settings_.saveLocaleSetting(ld);
         emit languageIndexChanged();
     } catch (const std::invalid_argument &e) {
