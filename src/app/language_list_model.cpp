@@ -7,7 +7,7 @@ LanguageListModel::LanguageListModel(QObject *parent) : QStringListModel(parent)
 
 int LanguageListModel::rowCount(const QModelIndex &parent) const
 {
-    auto size = Tts::TranslationResources::getLocales().size();
+    auto size = Tts::TranslationResources::instance().locales().size();
     if (size > INT_MAX)
         // TODO somehow show in ui
         return -1;
@@ -26,11 +26,13 @@ QVariant LanguageListModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || role != Qt::DisplayRole)
         return QVariant();
 
-    std::vector<Tts::Locale> locales = Tts::TranslationResources::getLocales();
+    std::vector<Tts::LocaleDescriptor> locales =
+        Tts::TranslationResources::instance().locales();
     if (locales.size() < index.row())
         return QVariant();
 
-    Tts::Locale l = locales.at(index.row());
+    Tts::LocaleDescriptor ld = locales.at(index.row());
+    Tts::Locale l(ld.language, ld.territory);
 
 #ifdef QT_TRANSLATOR
     QLocale ql = static_cast<QLocale>(l);

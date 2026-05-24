@@ -13,7 +13,7 @@ int SettingsBackend::languageIndex()
     // Because I don't expect large translation resource lists, the type
     // of index_ doesn't need to be long:
     // NOLINTNEXTLINE(*-narrowing-conversions)
-    int index = Tts::TranslationResources::index(localeKey);
+    int index = Tts::TranslationResources::instance().index(localeKey);
     if (index < 0) {
         setUseAutoTtsLanguage(true);
         return 0;
@@ -44,7 +44,8 @@ void SettingsBackend::setLanguageIndex(const int index)
         return;
 
     try {
-        Tts::LocaleDescriptor ld = Tts::TranslationResources::locale(index);
+        Tts::LocaleDescriptor ld =
+            Tts::TranslationResources::instance().locale(index);
         settings_.saveLocaleSetting(ld);
         emit languageIndexChanged();
     } catch (const std::invalid_argument &e) {

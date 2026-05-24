@@ -37,10 +37,9 @@ class SelfUpdatingTranslatorTest : public testing::Test
 protected:
     SelfUpdatingTranslatorTest()
     {
-        TtsTest::TranslationResources::get().insert(
-            { enAny_, TtsTest::ResourcePaths::en });
-        TtsTest::TranslationResources::get().insert(
-            { deAny_, TtsTest::ResourcePaths::de });
+        TtsTest::TranslationResources::instance().setResources(
+            { { enAny_, TtsTest::ResourcePaths::en },
+              { deAny_, TtsTest::ResourcePaths::de } });
 
         settings_ = std::make_shared<TtsTest::Settings>();
         settings_->saveLocaleSetting(enAny_);

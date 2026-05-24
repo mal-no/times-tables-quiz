@@ -20,20 +20,46 @@ struct std::hash<Tts::LocaleDescriptor>
 
 namespace Tts {
 
-typedef std::unordered_map<Tts::LocaleDescriptor, std::string> ResourceMap;
+typedef std::map<Tts::LocaleDescriptor, std::string> ResourceMap;
 typedef std::pair<Tts::LocaleDescriptor, std::string> ResourcePair;
 
 // Use a struct instead of a namespace to be able to use it as type in
 // templates. Then it can be replaced for testing.
 struct TranslationResources
 {
-    static ResourceMap &get();
-    static std::vector<Tts::Locale> getLocales();
-    static long index(const Tts::LocaleDescriptor &key);
-    static Tts::LocaleDescriptor locale(const long &index);
+    static TranslationResources &instance();
+
+    TranslationResources(const TranslationResources &) = delete;
+    TranslationResources(const TranslationResources &&) = delete;
+    TranslationResources &operator=(const TranslationResources &) = delete;
+    TranslationResources &operator=(const TranslationResources &&) = delete;
+
+    std::string path(const Tts::LocaleDescriptor &resourceKey);
+    std::vector<Tts::LocaleDescriptor> locales();
+    long index(const Tts::LocaleDescriptor &key);
+    Tts::LocaleDescriptor locale(const long &index);
+
+protected:
+    TranslationResources();
+    ~TranslationResources() { }
+
+    void setLocales(const std::vector<Tts::LocaleDescriptor> &locales)
+    {
+        resources_.clear();
+        for (const auto &l : locales)
+            resources_.insert({ l, "" });
+    }
+    void addLocale(const LocaleDescriptor &locale)
+    {
+        resources_.insert({ locale, "" });
+    }
+    void setResources(const ResourceMap &resources)
+    {
+        resources_ = std::move(resources);
+    }
 
 private:
-    TranslationResources() { }
+    ResourceMap resources_;
 };
 
 } // namespace Tts
