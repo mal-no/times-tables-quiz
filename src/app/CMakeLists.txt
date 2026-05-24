@@ -45,6 +45,8 @@ qt_add_qml_module(OTTQ
         self_updating_translator.cpp
         language_list_model.hpp
         language_list_model.cpp
+        auto_locale.hpp
+        auto_locale.cpp
 )
 
 qt_add_translations(OTTQ

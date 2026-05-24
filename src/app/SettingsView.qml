@@ -32,8 +32,12 @@ Item {
                 Layout.row: 0
                 opacity: switchTtsLocale.checked ? 1 : 0.5
                 text: {
-                    var l = settingsBackend.autoLanguage;
+                    var l = autoLocale.nativeName;
                     return "%1\n(%2)".arg(l.language).arg(l.territory);
+                }
+
+                AutoLocale {
+                    id: autoLocale
                 }
             }
 

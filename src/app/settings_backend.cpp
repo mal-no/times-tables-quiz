@@ -26,18 +26,6 @@ bool SettingsBackend::useAutoTtsLanguage()
     return settings_.loadAutoLocaleSetting();
 }
 
-auto SettingsBackend::autoLanguage() -> LanguageName
-{
-    Tts::AutoLocale al;
-#ifdef QT_TRANSLATOR
-    QLocale l = static_cast<QLocale>(al);
-#else
-    QLocale l(QString::fromStdString(al.name()));
-#endif
-    LanguageName languageName(l.nativeLanguageName(), l.nativeTerritoryName());
-    return languageName;
-}
-
 void SettingsBackend::setLanguageIndex(const int index)
 {
     if (languageIndex() == index)

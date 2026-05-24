@@ -16,10 +16,6 @@ class SettingsBackend : public QObject
                WRITE setLanguageIndex
                NOTIFY languageIndexChanged
                FINAL)
-    Q_PROPERTY(LanguageName autoLanguage
-               READ autoLanguage
-               NOTIFY autoLanguageChanged
-               FINAL)
     // clang-format on
     QML_ELEMENT
 
@@ -28,7 +24,6 @@ public:
 
     int languageIndex();
     bool useAutoTtsLanguage();
-    LanguageName autoLanguage();
 
     void setLanguageIndex(const int index);
     void setUseAutoTtsLanguage(const bool useAutoTtsLanguage);
@@ -36,7 +31,6 @@ public:
 signals:
     void languageIndexChanged();
     void useAutoTtsLanguageChanged();
-    void autoLanguageChanged();
 
 private:
     Tts::Settings settings_;
