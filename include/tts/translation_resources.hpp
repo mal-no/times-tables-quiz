@@ -20,7 +20,7 @@ struct std::hash<Tts::LocaleDescriptor>
 
 namespace Tts {
 
-typedef std::unordered_map<Tts::LocaleDescriptor, std::string> ResourceMap;
+typedef std::map<Tts::LocaleDescriptor, std::string> ResourceMap;
 typedef std::pair<Tts::LocaleDescriptor, std::string> ResourcePair;
 
 // Use a struct instead of a namespace to be able to use it as type in
@@ -48,24 +48,18 @@ protected:
         resources_.clear();
         for (const auto &l : locales)
             resources_.insert({ l, "" });
-        locales_ = std::move(locales);
     }
     void addLocale(const LocaleDescriptor &locale)
     {
         resources_.insert({ locale, "" });
-        locales_.push_back(locale);
     }
     void setResources(const ResourceMap &resources)
     {
-        locales_.clear();
-        for (const auto r : resources)
-            locales_.push_back(r.first);
         resources_ = std::move(resources);
     }
 
 private:
     ResourceMap resources_;
-    std::vector<Tts::LocaleDescriptor> locales_;
 };
 
 } // namespace Tts

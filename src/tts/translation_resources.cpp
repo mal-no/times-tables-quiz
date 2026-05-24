@@ -16,8 +16,6 @@ Tts::TranslationResources &Tts::TranslationResources::instance()
 
 Tts::TranslationResources::TranslationResources()
 {
-    // The translation resource list cannot change without an app update.
-
 #if defined QT_TRANSLATOR
     // ":" is the base path for Qt Resource files.
     QDirIterator it(":", { "*.qm" }, QDir::Files, QDirIterator::Subdirectories);
@@ -25,7 +23,6 @@ Tts::TranslationResources::TranslationResources()
         auto dirStr = it.next().toStdString();
         auto descriptor = LocaleDescriptor::fromResourcePath(dirStr);
 
-        locales_.push_back(descriptor);
         resources_.insert({ descriptor, dirStr });
     }
 #elif defined BOOST_TRANSLATOR
@@ -38,7 +35,6 @@ Tts::TranslationResources::TranslationResources()
                 /* C++20 */) {
                 auto descriptor =
                     LocaleDescriptor::fromFileName(dir.filename().string());
-                locales_.push_back(descriptor);
                 resources_.insert({ descriptor, dirStr });
             }
         });
@@ -48,10 +44,11 @@ Tts::TranslationResources::TranslationResources()
 std::string
 Tts::TranslationResources::path(const Tts::LocaleDescriptor &resourceKey)
 {
-    if (locales_.empty())
+    if (resources_.empty())
         throw std::invalid_argument("Translation resources are empty.");
 
-    if (std::ranges::find(locales_, resourceKey) == locales_.end()) {
+    auto it = resources_.find(resourceKey);
+    if (it == resources_.end()) {
         std::stringstream ss;
         ss << "No matching key in translation resources for locale "
               "descriptor "
@@ -59,18 +56,34 @@ Tts::TranslationResources::path(const Tts::LocaleDescriptor &resourceKey)
         throw std::invalid_argument(ss.str());
     }
 
-    return resources_.at(resourceKey);
+    return it->second;
 }
 
 std::vector<Tts::LocaleDescriptor> Tts::TranslationResources::locales()
 {
-    return locales_;
+    static std::vector<Tts::LocaleDescriptor> locales;
+    // Allow changing locale list for unit testing. But generally the resources
+    // cannot change without changing the installation.
+    // TODO think of an alternative for unit testing. This comparison seems
+    // excessive for just covering unit tests.
+    bool localesNotChanged = locales.size() == resources_.size();
+    for (const auto &l : locales)
+        localesNotChanged = localesNotChanged && resources_.contains(l);
+
+    if (localesNotChanged)
+        return locales;
+
+    locales.clear();
+    for (const auto &r : resources_)
+        locales.push_back(r.first);
+
+    return locales;
 }
 
 long Tts::TranslationResources::index(const Tts::LocaleDescriptor &key)
 {
     // Should not be static because of unit testing.
-    const ResourceMap::const_iterator itBegin = resources_.begin();
+    const auto itBegin = resources_.begin();
 
     auto itKey = resources_.find(key);
 
@@ -97,7 +110,7 @@ auto Tts::TranslationResources::locale(const long &index) -> LocaleDescriptor
         throw std::invalid_argument("Index is larger than or equal to the"
                                     "resources size.");
 
-    ResourceMap::iterator it = resources_.begin();
+    auto it = resources_.begin();
     std::advance(it, index);
 
     return it->first;
