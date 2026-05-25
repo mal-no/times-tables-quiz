@@ -25,7 +25,7 @@ FocusScope {
             qRoot.sayQuestion();
         } else {
             // Let last question fade out instead of stopping it.
-            quizBackend.quizCompleted();
+            qRoot.state = "completed";
         }
     }
 
@@ -45,7 +45,7 @@ FocusScope {
         }
     }
 
-    state: quizBackend.state
+    state: "setting-up"
 
     states: [
         State {
@@ -148,11 +148,17 @@ FocusScope {
     ]
 
     StackView.onActivated: {
-        quizBackend.startStateMachine();
         quiz.setup(qRoot.config);
+        var ttsAvailable = tts.state === TextToSpeech.Ready;
+        var quizAvailable = quiz.numQuestionsRemaining >= 0;
+        if (ttsAvailable && quizAvailable) {
+            var ttsSettingUp = ttsStateChangeConnection.enabled;
+            qRoot.state = ttsSettingUp ? "setting-up" : "available";
+            qRoot.sayQuestion();
+        }
     }
     StackView.onDeactivated: {
-        quizBackend.stopStateMachine();
+        qRoot.state = "setting-up";
     }
     onShowLocaleError: {
         dlgLocaleError.open();
@@ -163,7 +169,7 @@ FocusScope {
 
         onError: msg => {
                      console.log(msg);
-                     quizBackend.error();
+                     qRoot.state = "unavailable";
                  }
         onQuestionChanged: {
             answerInput.text = "";
@@ -178,25 +184,8 @@ FocusScope {
 
         onError: msg => {
                      console.log(msg);
-                     quizBackend.error();
+                     qRoot.state = "unavailable";
                  }
-    }
-
-    QuizBackend {
-        id: quizBackend
-
-        onFirstQuestion: {
-            if (quiz.numQuestionsRemaining >= 0)
-                qRoot.sayQuestion();
-            else
-                quizBackend.error();
-        }
-        onSetup: {
-            if (tts.state === TextToSpeech.Error) {
-                // could not set translation
-                qRoot.showLocaleError();
-            }
-        }
     }
 
     // Times Tables:
@@ -303,13 +292,36 @@ FocusScope {
         locale: Qt.locale(translator.localeName)
         rate: QuizSettings.voiceRate
 
-        onStateChanged: {
-            if (state === TextToSpeech.Ready)
-                quizBackend.ttsReady();
-            else if (state === TextToSpeech.Speaking)
-                quizBackend.ttsSpeaking();
-            else if (state === TextToSpeech.Error)
-                quizBackend.error();
+        onLocaleChanged: ttsStateChangeConnection.enabled = true
+    }
+
+    Connections {
+        id: errorConnection
+
+        function onStateChanged() {
+            if (tts.state === TextToSpeech.Error)
+                qRoot.state = "unavailable";
         }
+
+        enabled: !ttsStateChangeConnection.enabled
+        target: tts
+    }
+
+    Connections {
+        id: ttsStateChangeConnection
+
+        function onStateChanged() {
+            if (tts.state === TextToSpeech.Synthesizing) {
+                qRoot.state = "tts-synthesizing";
+            } else if (tts.state === TextToSpeech.Speaking) {
+                qRoot.state = "available";
+                ttsStateChangeConnection.enabled = false;
+            } else if (tts.state === TextToSpeech.Error) {
+                qRoot.state = "unavailable";
+            }
+        }
+
+        enabled: false
+        target: tts
     }
 }

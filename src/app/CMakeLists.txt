@@ -26,13 +26,9 @@ qt_add_qml_module(OTTQ
         SettingsView.qml
         QuizSettings.qml
     SOURCES
-        quiz_backend.hpp
-        quiz_backend.cpp
         language_name.hpp
         factor_range.hpp
         factor_range.cpp
-        quiz_state_machine.hpp
-        quiz_state_machine.cpp
         quiz_config.hpp
         quiz_config.cpp
         quiz.hpp
