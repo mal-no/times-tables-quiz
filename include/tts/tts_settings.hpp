@@ -32,8 +32,8 @@ namespace SettingsKeys {
 static const QString prefix = "Tts";
 static const QString localePrefix = prefix + "Locale";
 
-static const QString language = localePrefix + "/language";
-static const QString territory = localePrefix + "/territory";
+static const QString language = "languageCode";
+static const QString territory = "territoryCode";
 static const QString autoLocale = "useAutoLocale";
 
 } // namespace SettingsKeys

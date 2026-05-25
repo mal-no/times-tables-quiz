@@ -6,10 +6,6 @@ import QtQuick.Layouts
 Item {
     id: sRoot
 
-    SettingsBackend {
-        id: settingsBackend
-    }
-
     Column {
         padding: 10
         spacing: 10
@@ -57,13 +53,23 @@ Item {
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
                 Layout.row: 1
-                currentIndex: settingsBackend.languageIndex
+                currentIndex: {
+                    var language = QuizSettings.languageCode;
+                    var territory = QuizSettings.territoryCode;
+                    return languageListModel.index(language, territory);
+                }
                 enabled: !switchTtsLocale.checked
 
                 model: LanguageListModel {
+                    id: languageListModel
                 }
 
-                onActivated: settingsBackend.languageIndex = currentIndex
+                onActivated: {
+                    var lc = languageListModel.languageCode(currentIndex);
+                    var tc = languageListModel.territoryCode(currentIndex);
+                    QuizSettings.languageCode = lc;
+                    QuizSettings.territoryCode = tc;
+                }
             }
         }
 
