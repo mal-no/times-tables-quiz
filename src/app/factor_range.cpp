@@ -1,46 +1,32 @@
 #include "factor_range.hpp"
-#include "timestables/factor_range.hpp"
 
-FactorRange::FactorRange()
-    : factorRange_(std::make_shared<TimesTables::FactorRange>())
-{
-}
-
-FactorRange::FactorRange(std::shared_ptr<TimesTables::FactorRange> fr)
-    : factorRange_(fr)
-{
-}
+FactorRange::FactorRange() : first_(1), second_(20) { }
 
 int FactorRange::first() const
 {
-    return factorRange_->first;
+    return first_;
 }
 
 int FactorRange::second() const
 {
-    return factorRange_->second;
+    return second_;
 }
 
-std::shared_ptr<TimesTables::FactorRange> FactorRange::get() const
+void FactorRange::setFirst(const int first)
 {
-    return factorRange_;
-}
-
-void FactorRange::setFirst(const int first) const
-{
-    if (factorRange_->first == first)
+    if (first_ == first)
         return;
-    factorRange_->first = first;
+    first_ = first;
 }
 
-void FactorRange::setSecond(const int second) const
+void FactorRange::setSecond(const int second)
 {
-    if (factorRange_->second == second)
+    if (second_ == second)
         return;
-    factorRange_->second = second;
+    second_ = second;
 }
 
 bool FactorRange::operator==(const FactorRange &fr)
 {
-    return first() == fr.first() && second() == fr.second();
+    return first_ == fr.first() && second_ == fr.second();
 }
