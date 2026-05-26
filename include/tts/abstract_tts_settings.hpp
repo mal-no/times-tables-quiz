@@ -36,11 +36,9 @@ public:
 
     virtual LocaleDescriptor loadLocaleSetting() = 0;
     virtual bool loadAutoLocaleSetting() = 0;
-    virtual double loadVoiceRateSetting() = 0;
 
     virtual void saveLocaleSetting(const LocaleDescriptor &ld) = 0;
     virtual void saveAutoLocaleSetting(const bool useAutoLocale) = 0;
-    virtual void saveVoiceRateSetting(const double rate) = 0;
 };
 
 } // namespace Tts

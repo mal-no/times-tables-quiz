@@ -1,11 +1,11 @@
 #include "quiz_config.hpp"
 
-QList<int> QuizConfiguration::timesTables()
+QList<int> QuizConfiguration::timesTables() const
 {
     return timesTables_;
 }
 
-QString QuizConfiguration::timesTablesStr()
+QString QuizConfiguration::timesTablesStr() const
 {
     QString timesTables;
     for (const int n : timesTables_)
@@ -16,7 +16,7 @@ QString QuizConfiguration::timesTablesStr()
     return timesTables.first(timesTables.length() - 2);
 }
 
-FactorRange QuizConfiguration::factorRange()
+FactorRange QuizConfiguration::factorRange() const
 {
     return factorRange_;
 }

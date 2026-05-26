@@ -1,5 +1,4 @@
 add_library(TimesTables STATIC
-    quiz.cpp
 )
 
 target_link_libraries(TimesTables PRIVATE

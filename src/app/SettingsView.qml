@@ -6,11 +6,6 @@ import QtQuick.Layouts
 Item {
     id: sRoot
 
-    SettingsBackend {
-        id: settingsBackend
-
-    }
-
     Column {
         padding: 10
         spacing: 10
@@ -33,8 +28,12 @@ Item {
                 Layout.row: 0
                 opacity: switchTtsLocale.checked ? 1 : 0.5
                 text: {
-                    var l = settingsBackend.autoLanguage;
+                    var l = autoLocale.nativeName;
                     return "%1\n(%2)".arg(l.language).arg(l.territory);
+                }
+
+                AutoLocale {
+                    id: autoLocale
                 }
             }
 
@@ -44,9 +43,9 @@ Item {
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 Layout.column: 1
                 Layout.row: 0
-                checked: settingsBackend.useAutoTtsLanguage
+                checked: QuizSettings.useAutoLocale
 
-                onToggled: settingsBackend.useAutoTtsLanguage = checked
+                onToggled: QuizSettings.useAutoLocale = checked
             }
 
             ComboBox {
@@ -54,11 +53,23 @@ Item {
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
                 Layout.row: 1
-                currentIndex: settingsBackend.languageIndex
+                currentIndex: {
+                    var language = QuizSettings.languageCode;
+                    var territory = QuizSettings.territoryCode;
+                    return languageListModel.index(language, territory);
+                }
                 enabled: !switchTtsLocale.checked
-                model: settingsBackend.languages
 
-                onActivated: settingsBackend.languageIndex = currentIndex
+                model: LanguageListModel {
+                    id: languageListModel
+                }
+
+                onActivated: {
+                    var lc = languageListModel.languageCode(currentIndex);
+                    var tc = languageListModel.territoryCode(currentIndex);
+                    QuizSettings.languageCode = lc;
+                    QuizSettings.territoryCode = tc;
+                }
             }
         }
 
@@ -75,9 +86,9 @@ Item {
                 return Number(rate).toLocaleString(Qt.locale("C"), 'f', 1);
             }
             to: 10
-            value: settingsBackend.voiceRate * 10
+            value: QuizSettings.voiceRate * 10
 
-            onValueChanged: settingsBackend.voiceRate = value / 10
+            onValueChanged: QuizSettings.voiceRate = value / 10
         }
     }
 }

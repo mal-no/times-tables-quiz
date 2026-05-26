@@ -1,13 +1,50 @@
 import OttqApp
 import QtQuick
 import QtQuick.Controls.Basic
+import QtTextToSpeech
+import QtQml
 
 FocusScope {
     id: qRoot
 
     property quizConfiguration config
 
-    state: quizBackend.state
+    signal showLocaleError
+
+    function check(answer: string) {
+        if (answer === "")
+            return;
+
+        if (quiz.answerIsCorrect(parseInt(answer)))
+            nextQuestion();
+    }
+
+    function nextQuestion() {
+        if (quiz.next()) {
+            qRoot.sayQuestion();
+        } else {
+            // Let last question fade out instead of stopping it.
+            qRoot.state = "completed";
+        }
+    }
+
+    function sayQuestion() {
+        var q = quiz.question();
+        var qStrBase = translator.translate(q.questionBase);
+        var qStr = qStrBase.arg(q.number).arg(q.factor);
+        // Stop current question and start next right away instead of
+        // enqueueing. This way the quiz is more snappy.
+        if (tts.state === TextToSpeech.Speaking) {
+            tts.stop();
+            tts.say(qStr);
+        } else {
+            // Enqueue in case tts is not ready for reasons other than
+            // currently speaking.
+            tts.enqueue(qStr);
+        }
+    }
+
+    state: "setting-up"
 
     states: [
         State {
@@ -110,21 +147,44 @@ FocusScope {
     ]
 
     StackView.onActivated: {
-        quizBackend.startStateMachine(qRoot.config);
+        quiz.setup(qRoot.config);
+        var ttsAvailable = tts.state === TextToSpeech.Ready;
+        var quizAvailable = quiz.numQuestionsRemaining >= 0;
+        if (ttsAvailable && quizAvailable) {
+            var ttsSettingUp = ttsStateChangeConnection.enabled;
+            qRoot.state = ttsSettingUp ? "setting-up" : "available";
+            qRoot.sayQuestion();
+        }
     }
     StackView.onDeactivated: {
-        quizBackend.stopStateMachine();
+        qRoot.state = "setting-up";
+    }
+    onShowLocaleError: {
+        dlgLocaleError.open();
     }
 
-    QuizBackend {
-        id: quizBackend
+    Quiz {
+        id: quiz
 
+        onError: msg => {
+                     console.log(msg);
+                     qRoot.state = "unavailable";
+                 }
         onQuestionChanged: {
             answerInput.text = "";
         }
-        onShowLocaleError: {
-            dlgLocaleError.open();
-        }
+    }
+
+    // The state of QuizView is kept even if not on top of the stack, so the
+    // locale can be updated in the settings and would need to be applied when
+    // returning to the view. This would be handled inside the translator.
+    SelfUpdatingTranslator {
+        id: translator
+
+        onError: msg => {
+                     console.log(msg);
+                     qRoot.state = "unavailable";
+                 }
     }
 
     // Times Tables:
@@ -138,8 +198,8 @@ FocusScope {
         anchors.topMargin: 2
         opacity: 0.5
         text: {
-            var num = quizBackend.numQuestionsRemaining;
-            return num <= 0 ? qsTr("Last question") : num + " " + qsTr("left");
+            var num = quiz.numQuestionsRemaining;
+            return num === 0 ? qsTr("Last question") : num + " " + qsTr("left");
         }
     }
 
@@ -168,7 +228,7 @@ FocusScope {
             if (focus && inputMethodHints == Qt.ImhDigitsOnly)
                 forceActiveFocus();
         }
-        onTextChanged: quizBackend.check(text)
+        onTextChanged: qRoot.check(text)
     }
 
     Button {
@@ -180,7 +240,7 @@ FocusScope {
         text: qsTr("Replay")
 
         onClicked: {
-            quizBackend.sayQuestion();
+            qRoot.sayQuestion();
             answerInput.focus = true;
         }
     }
@@ -222,6 +282,45 @@ FocusScope {
         anchors.right: parent.right
         anchors.rightMargin: 2
         opacity: 0.5
-        text: quizBackend.localeName
+        text: translator.localeName
+    }
+
+    TextToSpeech {
+        id: tts
+
+        locale: Qt.locale(translator.localeName)
+        rate: QuizSettings.voiceRate
+
+        onLocaleChanged: ttsStateChangeConnection.enabled = true
+    }
+
+    Connections {
+        id: errorConnection
+
+        function onStateChanged() {
+            if (tts.state === TextToSpeech.Error)
+                qRoot.state = "unavailable";
+        }
+
+        enabled: !ttsStateChangeConnection.enabled
+        target: tts
+    }
+
+    Connections {
+        id: ttsStateChangeConnection
+
+        function onStateChanged() {
+            if (tts.state === TextToSpeech.Synthesizing) {
+                qRoot.state = "tts-synthesizing";
+            } else if (tts.state === TextToSpeech.Speaking) {
+                qRoot.state = "available";
+                ttsStateChangeConnection.enabled = false;
+            } else if (tts.state === TextToSpeech.Error) {
+                qRoot.state = "unavailable";
+            }
+        }
+
+        enabled: false
+        target: tts
     }
 }

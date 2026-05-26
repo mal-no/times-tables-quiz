@@ -24,9 +24,9 @@ struct QuizConfiguration
     QML_VALUE_TYPE(quizConfiguration)
 
 public:
-    QList<int> timesTables();
-    QString timesTablesStr();
-    FactorRange factorRange();
+    QList<int> timesTables() const;
+    QString timesTablesStr() const;
+    FactorRange factorRange() const;
 
     void setFactorRange(const FactorRange &fr);
 
