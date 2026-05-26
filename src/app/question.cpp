@@ -16,6 +16,11 @@ int Question::factor()
     return factor_;
 }
 
+QString Question::questionBase()
+{
+    return TimesTables::questionBase;
+}
+
 bool Question::check(const int product)
 {
     return factor_ * number_ == product;

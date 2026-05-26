@@ -4,6 +4,10 @@
 #include <QObject>
 #include <qqml.h>
 
+namespace TimesTables {
+static const char *const questionBase = "%1 times %2";
+} // namespace TimesTables
+
 class Question
 {
     Q_GADGET
@@ -14,6 +18,9 @@ class Question
     Q_PROPERTY(int factor
                READ factor
                FINAL)
+    Q_PROPERTY(QString questionBase
+               READ questionBase
+               FINAL)
     // clang-format on
     QML_VALUE_TYPE(question)
 public:
@@ -23,6 +30,7 @@ public:
 
     int number();
     int factor();
+    QString questionBase();
 
     Q_INVOKABLE bool check(const int product);
 
