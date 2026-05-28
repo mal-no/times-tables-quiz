@@ -1,5 +1,5 @@
 pragma ComponentBehavior: Bound
-import OttqApp
+import TtqApp
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
@@ -10,7 +10,7 @@ ApplicationWindow {
     property QuizConfigView quizConfigViewInst
     property QuizView quizViewInst
 
-    title: qsTr("Oral Times Tables Quiz")
+    title: qsTr("Times Tables Quiz")
     visible: true
 
     footer: ToolBar {
@@ -64,7 +64,7 @@ ApplicationWindow {
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignLeft
                 opacity: 0.75
-                text: qsTr("Oral Times Tables Quiz")
+                text: root.title
                 verticalAlignment: Qt.AlignVCenter
             }
 

@@ -21,6 +21,11 @@ QString Question::questionBase()
     return TimesTables::questionBase;
 }
 
+QString Question::ttsQuestionBase()
+{
+    return TimesTables::ttsQuestionBase;
+}
+
 bool Question::check(const int product)
 {
     return factor_ * number_ == product;

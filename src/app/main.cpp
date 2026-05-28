@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("OttqApp", "Main");
+    engine.loadFromModule("TtqApp", "Main");
 
     // used by settings
     QCoreApplication::setOrganizationName("xnelma");
     QCoreApplication::setOrganizationDomain("github.com/xnelma");
-    QCoreApplication::setApplicationName("Oral Times Tables Quiz");
+    QCoreApplication::setApplicationName("Times Tables Quiz");
 
     return app.exec();
 }

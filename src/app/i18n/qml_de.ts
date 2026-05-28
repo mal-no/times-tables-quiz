@@ -6,8 +6,8 @@
     <message>
         <location filename="../Main.qml" line="9"/>
         <location filename="../Main.qml" line="76"/>
-        <source>Oral Times Tables Quiz</source>
-        <translation>Oral Times Tables Quiz</translation>
+        <source>Times Tables Quiz</source>
+        <translation>Times Tables Quiz</translation>
     </message>
     <message>
         <location filename="../Main.qml" line="47"/>
@@ -146,6 +146,16 @@
         <location filename="../QuizConfigView.qml" line="182"/>
         <source>Resetting Times Tables</source>
         <translation>Reihen zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../QuizConfigView.qml" line="194"/>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <location filename="../QuizConfigView.qml" line="199"/>
+        <source>Audio</source>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="../QuizConfigView.qml" line="192"/>

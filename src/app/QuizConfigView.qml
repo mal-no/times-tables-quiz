@@ -1,13 +1,20 @@
 pragma ComponentBehavior: Bound
-import OttqApp
+import TtqApp
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
+import QtCore
 
 Item {
     id: suRoot
 
     property quizConfiguration config
+
+    Settings {
+        id: settings
+
+        property alias showQuestion: radioShowQuestion.checked
+    }
 
     Column {
         anchors.centerIn: parent
@@ -180,6 +187,35 @@ Item {
 
             first.onMoved: suRoot.config.factorRange.first = intFirst
             second.onMoved: suRoot.config.factorRange.second = intSecond
+        }
+
+        MenuSeparator {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            RadioButton {
+                id: radioShowQuestion
+
+                // Initialized by settings.
+                checked: true
+                text: qsTr("Text")
+
+                onCheckedChanged: suRoot.config.showQuestion = checked
+            }
+
+            RadioButton {
+                // If the other radio button is not initialized to checked,
+                // this one will not get automatically checked, so explicitely
+                // initialize it to true.
+                // Apart from the init, the switch would normally be handled by
+                // the parent but is now overriden.
+                checked: !radioShowQuestion.checked
+                text: qsTr("Audio")
+            }
         }
     }
 

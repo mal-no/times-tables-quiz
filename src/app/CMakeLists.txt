@@ -1,6 +1,6 @@
-qt_add_executable(OTTQ main.cpp)
+qt_add_executable(TimesTablesQuiz main.cpp)
 
-target_link_libraries(OTTQ PRIVATE
+target_link_libraries(TimesTablesQuiz PRIVATE
     Qt6::Quick
     Qt6::TextToSpeech
     Qt6::StateMachine
@@ -8,7 +8,7 @@ target_link_libraries(OTTQ PRIVATE
     Tts
 )
 
-target_include_directories(OTTQ PRIVATE
+target_include_directories(TimesTablesQuiz PRIVATE
     "${PROJECT_SOURCE_DIR}/include"
 )
 
@@ -16,8 +16,8 @@ set_source_files_properties(QuizSettings.qml PROPERTIES
     QT_QML_SINGLETON_TYPE TRUE
 )
 
-qt_add_qml_module(OTTQ
-    URI OttqApp
+qt_add_qml_module(TimesTablesQuiz
+    URI TtqApp
     VERSION 0.1
     QML_FILES
         Main.qml
@@ -43,8 +43,8 @@ qt_add_qml_module(OTTQ
         auto_locale.cpp
 )
 
-qt_add_translations(OTTQ
+qt_add_translations(TimesTablesQuiz
      TS_FILE_BASE qml
      TS_FILE_DIR i18n
-     RESOURCE_PREFIX qt/qml/OttqApp/i18n
+     RESOURCE_PREFIX qt/qml/TtqApp/i18n
 )
