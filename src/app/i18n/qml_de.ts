@@ -6,8 +6,8 @@
     <message>
         <location filename="../Main.qml" line="9"/>
         <location filename="../Main.qml" line="76"/>
-        <source>Oral Times Tables Quiz</source>
-        <translation>Oral Times Tables Quiz</translation>
+        <source>Times Tables Quiz</source>
+        <translation>Times Tables Quiz</translation>
     </message>
     <message>
         <location filename="../Main.qml" line="47"/>

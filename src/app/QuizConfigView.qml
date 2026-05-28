@@ -1,5 +1,5 @@
 pragma ComponentBehavior: Bound
-import OttqApp
+import TtqApp
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
