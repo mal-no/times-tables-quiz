@@ -21,12 +21,25 @@ FactorRange QuizConfiguration::factorRange() const
     return factorRange_;
 }
 
+bool QuizConfiguration::showQuestion() const
+{
+    return showQuestion_;
+}
+
 void QuizConfiguration::setFactorRange(const FactorRange &fr)
 {
     if (fr == factorRange_)
         return;
 
     factorRange_ = fr;
+}
+
+void QuizConfiguration::setShowQuestion(const bool &showQuestion)
+{
+    if (showQuestion == showQuestion_)
+        return;
+
+    showQuestion_ = showQuestion;
 }
 
 bool QuizConfiguration::addTimesTable(const int number)

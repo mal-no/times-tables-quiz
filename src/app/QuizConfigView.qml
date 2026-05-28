@@ -192,11 +192,14 @@ Item {
 
             RadioButton {
                 text: qsTr("Text")
+
+                onCheckedChanged: suRoot.config.showQuestion = checked
             }
 
             RadioButton {
                 checked: true
                 text: qsTr("Audio")
+                onCheckedChanged: suRoot.config.showQuestion = !checked
             }
         }
     }

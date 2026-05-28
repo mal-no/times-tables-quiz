@@ -20,6 +20,10 @@ struct QuizConfiguration
                READ factorRange
                WRITE setFactorRange
                FINAL)
+    Q_PROPERTY(bool showQuestion
+               READ showQuestion
+               WRITE setShowQuestion
+               FINAL)
     // clang-format on
     QML_VALUE_TYPE(quizConfiguration)
 
@@ -27,8 +31,10 @@ public:
     QList<int> timesTables() const;
     QString timesTablesStr() const;
     FactorRange factorRange() const;
+    bool showQuestion() const;
 
     void setFactorRange(const FactorRange &fr);
+    void setShowQuestion(const bool &showQuestion);
 
     Q_INVOKABLE bool addTimesTable(const int number);
     Q_INVOKABLE bool remove(const int timesTableNumber);
@@ -38,6 +44,7 @@ public:
 private:
     QList<int> timesTables_;
     FactorRange factorRange_;
+    bool showQuestion_ = false;
 };
 
 #endif // OTTQ_20251104_1759_INCLUDE
