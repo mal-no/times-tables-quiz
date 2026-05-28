@@ -3,11 +3,18 @@ import TtqApp
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
+import QtCore
 
 Item {
     id: suRoot
 
     property quizConfiguration config
+
+    Settings {
+        id: settings
+
+        property alias showQuestion: radioShowQuestion.checked
+    }
 
     Column {
         anchors.centerIn: parent
@@ -191,15 +198,22 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             RadioButton {
+                id: radioShowQuestion
+
+                // Initialized by settings.
+                checked: true
                 text: qsTr("Text")
 
                 onCheckedChanged: suRoot.config.showQuestion = checked
             }
 
             RadioButton {
-                checked: true
+                // If the other radio button is not initialized to checked,
+                // this one will not get automatically checked, so explicitely
+                // initialize it to true.
+                // Apart from the init, the switch is handled by the parent.
+                checked: !radioShowQuestion.checked
                 text: qsTr("Audio")
-                onCheckedChanged: suRoot.config.showQuestion = !checked
             }
         }
     }
