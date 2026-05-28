@@ -148,6 +148,16 @@
         <translation>Reihen zurücksetzen</translation>
     </message>
     <message>
+        <location filename="../QuizConfigView.qml" line="194"/>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <location filename="../QuizConfigView.qml" line="199"/>
+        <source>Audio</source>
+        <translation>Audio</translation>
+    </message>
+    <message>
         <location filename="../QuizConfigView.qml" line="192"/>
         <source>The list of times tables will be cleared. Are you sure?</source>
         <translation>Die Liste von Reihen wird geleert. Bist du dir sicher?</translation>

@@ -181,6 +181,24 @@ Item {
             first.onMoved: suRoot.config.factorRange.first = intFirst
             second.onMoved: suRoot.config.factorRange.second = intSecond
         }
+
+        MenuSeparator {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            RadioButton {
+                text: qsTr("Text")
+            }
+
+            RadioButton {
+                checked: true
+                text: qsTr("Audio")
+            }
+        }
     }
 
     Dialog {
