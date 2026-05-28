@@ -30,17 +30,28 @@ FocusScope {
 
     function sayQuestion() {
         var q = quiz.question();
-        var qStrBase = translator.translate(q.ttsQuestionBase);
+        var qStrBase;
+        if (qRoot.config.showQuestion) {
+            qStrBase = q.questionBase;
+        } else {
+            qStrBase = q.ttsQuestionBase;
+            qStrBase = translator.translate(qStrBase);
+        }
         var qStr = qStrBase.arg(q.number).arg(q.factor);
         // Stop current question and start next right away instead of
         // enqueueing. This way the quiz is more snappy.
-        if (tts.state === TextToSpeech.Speaking) {
-            tts.stop();
-            tts.say(qStr);
+
+        if (qRoot.config.showQuestion) {
+            txtQuestion.text = qStr;
         } else {
-            // Enqueue in case tts is not ready for reasons other than
-            // currently speaking.
-            tts.enqueue(qStr);
+            if (tts.state === TextToSpeech.Speaking) {
+                tts.stop();
+                tts.say(qStr);
+            } else {
+                // Enqueue in case tts is not ready for reasons other than
+                // currently speaking.
+                tts.enqueue(qStr);
+            }
         }
     }
 
@@ -51,6 +62,10 @@ FocusScope {
             name: "unavailable"
 
             PropertyChanges {
+                txtQuestion {
+                    visible: false
+                }
+
                 answerInput {
                     enabled: false
                     focus: false
@@ -69,6 +84,10 @@ FocusScope {
                 btnReplay {
                     visible: false
                 }
+
+                labelLocale {
+                    visible: false
+                }
             }
         },
         State {
@@ -82,10 +101,6 @@ FocusScope {
 
                 progressBarTtsLoading {
                     visible: true
-                }
-
-                labelLocale {
-                    text: ""
                 }
             }
         },
@@ -113,6 +128,10 @@ FocusScope {
             name: "available"
 
             PropertyChanges {
+                txtQuestion {
+                    visible: qRoot.config.showQuestion
+                }
+
                 answerInput {
                     enabled: true
                     focus: true
@@ -129,7 +148,11 @@ FocusScope {
                 }
 
                 btnReplay {
-                    visible: true
+                    visible: !qRoot.config.showQuestion
+                }
+
+                labelLocale {
+                    visible: !qRoot.config.showQuestion
                 }
             }
         },
@@ -150,14 +173,20 @@ FocusScope {
         quiz.setup(qRoot.config);
         var ttsAvailable = tts.state === TextToSpeech.Ready;
         var quizAvailable = quiz.numQuestionsRemaining >= 0;
-        if (ttsAvailable && quizAvailable) {
+        if (!qRoot.config.showQuestion && ttsAvailable && quizAvailable) {
             var ttsSettingUp = ttsStateChangeConnection.enabled;
             qRoot.state = ttsSettingUp ? "setting-up" : "available";
             qRoot.sayQuestion();
+        } else if (qRoot.config.showQuestion && quizAvailable) {
+            qRoot.state = "available";
+            qRoot.sayQuestion();
+        } else {
+            qRoot.state = "unavailable";
         }
     }
     StackView.onDeactivated: {
         qRoot.state = "setting-up";
+        txtQuestion.text = "";
     }
     onShowLocaleError: {
         dlgLocaleError.open();
@@ -201,6 +230,14 @@ FocusScope {
             var num = quiz.numQuestionsRemaining;
             return num === 0 ? qsTr("Last question") : num + " " + qsTr("left");
         }
+    }
+
+    Text {
+        id: txtQuestion
+
+        anchors.bottom: answerInput.top
+        anchors.bottomMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     TextArea {
@@ -291,7 +328,10 @@ FocusScope {
         locale: Qt.locale(translator.localeName)
         rate: QuizSettings.voiceRate
 
-        onLocaleChanged: ttsStateChangeConnection.enabled = true
+        onLocaleChanged: {
+            if (!qRoot.config.showQuestion)
+                ttsStateChangeConnection.enabled = true;
+        }
     }
 
     Connections {
@@ -302,7 +342,7 @@ FocusScope {
                 qRoot.state = "unavailable";
         }
 
-        enabled: !ttsStateChangeConnection.enabled
+        enabled: !ttsStateChangeConnection.enabled && !qRoot.config.showQuestion
         target: tts
     }
 
