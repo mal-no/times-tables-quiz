@@ -5,7 +5,8 @@
 #include <qqml.h>
 
 namespace TimesTables {
-static const char *const questionBase = "%1 times %2";
+static const char *const questionBase = "%1 x %2";
+static const char *const ttsQuestionBase = "%1 times %2";
 } // namespace TimesTables
 
 class Question
@@ -21,6 +22,9 @@ class Question
     Q_PROPERTY(QString questionBase
                READ questionBase
                FINAL)
+    Q_PROPERTY(QString ttsQuestionBase
+               READ ttsQuestionBase
+               FINAL)
     // clang-format on
     QML_VALUE_TYPE(question)
 public:
@@ -31,6 +35,7 @@ public:
     int number();
     int factor();
     QString questionBase();
+    QString ttsQuestionBase();
 
     Q_INVOKABLE bool check(const int product);
 

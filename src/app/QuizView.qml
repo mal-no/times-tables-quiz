@@ -30,7 +30,7 @@ FocusScope {
 
     function sayQuestion() {
         var q = quiz.question();
-        var qStrBase = translator.translate(q.questionBase);
+        var qStrBase = translator.translate(q.ttsQuestionBase);
         var qStr = qStrBase.arg(q.number).arg(q.factor);
         // Stop current question and start next right away instead of
         // enqueueing. This way the quiz is more snappy.
