@@ -211,7 +211,8 @@ Item {
                 // If the other radio button is not initialized to checked,
                 // this one will not get automatically checked, so explicitely
                 // initialize it to true.
-                // Apart from the init, the switch is handled by the parent.
+                // Apart from the init, the switch would normally be handled by
+                // the parent but is now overriden.
                 checked: !radioShowQuestion.checked
                 text: qsTr("Audio")
             }
