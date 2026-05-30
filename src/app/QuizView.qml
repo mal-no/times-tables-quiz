@@ -238,6 +238,7 @@ FocusScope {
         anchors.bottom: answerInput.top
         anchors.bottomMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
+        color: palette.text // Fixes dark mode not using light text.
     }
 
     TextArea {
