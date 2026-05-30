@@ -305,6 +305,7 @@ Item {
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
+            color: palette.text // Fixes dark mode not using light text.
             opacity: 0.5
             text: stRoot.title
         }
@@ -313,6 +314,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             elide: Text.ElideMiddle
             font.bold: true
+            color: palette.text // Fixes dark mode not using light text.
             horizontalAlignment: Text.AlignHCenter
             text: stRoot.subtitle
 
