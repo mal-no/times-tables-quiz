@@ -305,7 +305,7 @@ Item {
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#888"
+            opacity: 0.5
             text: stRoot.title
         }
 
